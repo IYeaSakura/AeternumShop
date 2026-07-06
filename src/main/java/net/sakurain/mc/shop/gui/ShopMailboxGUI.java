@@ -137,7 +137,6 @@ public class ShopMailboxGUI extends AbstractGUI {
             plugin.getLogger().severe("Failed to mark mailbox received: " + e.getMessage());
         }
 
-        initialize();
-        player.updateInventory();
+        new ShopMailboxGUI(player, page).open();
     }
 }
