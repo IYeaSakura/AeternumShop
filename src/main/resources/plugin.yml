@@ -9,21 +9,16 @@ load: POSTWORLD
 commands:
   shop:
     description: Open the AeternumShop main menu
-    usage: /shop [history|reload|mailbox]
+    usage: /shop [history|reload|mailbox|add|show]
     aliases: [shop]
     permission: aeternumshop.command.shop
-    permission-message: "<red>You don't have permission to use this command."
-  shopadd:
-    description: List the item in your main hand on the player market
-    usage: /shopadd <price>
-    permission: aeternumshop.command.shopadd
     permission-message: "<red>You don't have permission to use this command."
 
 permissions:
   aeternumshop.command.shop:
     description: Open the shop menu
     default: true
-  aeternumshop.command.shopadd:
+  aeternumshop.command.add:
     description: List items on the player market
     default: true
   aeternumshop.command.history:
@@ -35,6 +30,9 @@ permissions:
   aeternumshop.command.reload:
     description: Reload plugin configuration
     default: op
+  aeternumshop.command.show:
+    description: View currency information
+    default: true
   aeternumshop.admin:
     description: Admin permission
     default: op

@@ -1,7 +1,6 @@
 package net.sakurain.mc.shop.gui;
 
 import net.sakurain.mc.shop.model.PlayerListing;
-import net.sakurain.mc.shop.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -37,7 +36,7 @@ public class ShopConfirmGUI extends AbstractGUI {
         }
 
         if (optional.isEmpty()) {
-            setItem(22, createGuiItem(Material.BARRIER, "<red>挂单已失效"));
+            setItem(22, createGuiItem(Material.BARRIER, "<red>挂单已失效", new ArrayList<>()));
             return;
         }
 
@@ -50,9 +49,7 @@ public class ShopConfirmGUI extends AbstractGUI {
         lore.add("<gray>总价: <yellow>" + listing.getPrice());
         lore.add("<gray>卖家: <yellow>" + listing.getSellerName());
 
-        ItemStack display = createGuiItem(material,
-                "<yellow>" + StringUtil.capitalize(listing.getItemType().replace("_", " ")), lore);
-        setItem(13, display);
+        setItem(13, createGuiItem(material, listing.getItemAmount(), lore));
 
         setItem(29, plugin.getGuiManager().getGuiItem("confirm.confirm"));
         setItem(33, plugin.getGuiManager().getGuiItem("confirm.cancel"));

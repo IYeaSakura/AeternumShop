@@ -3,7 +3,6 @@ package net.sakurain.mc.shop.gui;
 import net.sakurain.mc.shop.currency.CurrencyManager;
 import net.sakurain.mc.shop.model.MailboxEntry;
 import net.sakurain.mc.shop.model.MailboxType;
-import net.sakurain.mc.shop.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -50,24 +49,24 @@ public class ShopMailboxGUI extends AbstractGUI {
             if (slot >= 45) break;
 
             Material material;
-            String name;
             List<String> lore = new ArrayList<>();
+            int amount = 1;
 
             if (entry.getType() == MailboxType.CURRENCY) {
                 material = plugin.getCurrencyManager().getBaseCurrency().getMaterial();
-                name = "<yellow>货币 x" + entry.getCurrencyAmount();
+                amount = (int) Math.min(entry.getCurrencyAmount(), material.getMaxStackSize());
                 lore.add("<gray>类型: 货币");
                 lore.add("<gray>数量: <yellow>" + entry.getCurrencyAmount() + " <gray>基础货币");
             } else {
                 material = Material.matchMaterial(entry.getItemType());
                 if (material == null) material = Material.BARRIER;
-                name = "<yellow>" + StringUtil.capitalize(entry.getItemType().replace("_", " ")) + " x" + entry.getItemAmount();
+                amount = entry.getItemAmount();
                 lore.add("<gray>类型: 物品");
                 lore.add("<gray>数量: <yellow>" + entry.getItemAmount());
             }
             lore.add("<green>点击领取");
 
-            setItem(slot, createGuiItem(material, name, lore));
+            setItem(slot, createGuiItem(material, amount, lore));
             slotToEntryId.put(slot, entry.getId());
         }
 
@@ -116,7 +115,6 @@ public class ShopMailboxGUI extends AbstractGUI {
             CurrencyManager cm = plugin.getCurrencyManager();
             long remaining = cm.deposit(player, entry.getCurrencyAmount());
             if (remaining > 0) {
-                // 仍然无法存入，保留信箱条目
                 plugin.getMessageManager().send(player, "inventory-full");
                 return;
             }

@@ -70,14 +70,24 @@ public abstract class AbstractGUI implements InventoryHolder {
     }
 
     protected ItemStack createGuiItem(Material material, String name, String... lore) {
-        return createGuiItem(material, name, Arrays.asList(lore));
+        return createGuiItem(material, 1, name, Arrays.asList(lore));
     }
 
     protected ItemStack createGuiItem(Material material, String name, List<String> lore) {
-        ItemStack item = new ItemStack(material);
+        return createGuiItem(material, 1, name, lore);
+    }
+
+    protected ItemStack createGuiItem(Material material, int amount, List<String> lore) {
+        return createGuiItem(material, amount, null, lore);
+    }
+
+    protected ItemStack createGuiItem(Material material, int amount, String name, List<String> lore) {
+        ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(StringUtil.toComponent(name));
+            if (name != null) {
+                meta.displayName(StringUtil.toComponent(name));
+            }
             if (lore != null && !lore.isEmpty()) {
                 meta.lore(lore.stream().map(StringUtil::toComponent).collect(Collectors.toList()));
             }

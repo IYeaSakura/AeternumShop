@@ -132,12 +132,69 @@ public class CurrencyManager {
             deposit(player, Math.abs(remaining));
         }
 
+        // 阶段4: 自动压缩背包内货币为最小格数
+        compressCurrency(player);
+
         return true;
     }
 
     public long deposit(Player player, long amount) {
+        // 先压缩已有货币，腾出空间
+        compressCurrency(player);
+
+        long remaining = giveCurrencyInternal(player, amount);
+        if (remaining > 0) {
+            MailboxEntry entry = new MailboxEntry(
+                    player.getUniqueId(),
+                    MailboxType.CURRENCY,
+                    null,
+                    0,
+                    remaining,
+                    false,
+                    LocalDateTime.now()
+            );
+            try {
+                plugin.getDatabaseManager().getMailboxDAO().insert(entry);
+            } catch (Exception e) {
+                plugin.getLogger().severe("Failed to deposit currency to mailbox: " + e.getMessage());
+            }
+        }
+
+        return remaining;
+    }
+
+    /**
+     * 自动压缩玩家背包内的货币为最小格数。
+     * 先统计总价值，清空货币物品，再按 bundle 优先返还。
+     */
+    public void compressCurrency(Player player) {
+        long totalValue = getPlayerBalance(player);
+        if (totalValue <= 0) {
+            return;
+        }
+
+        removeAllCurrency(player);
+        long remaining = giveCurrencyInternal(player, totalValue);
+        if (remaining > 0) {
+            MailboxEntry entry = new MailboxEntry(
+                    player.getUniqueId(),
+                    MailboxType.CURRENCY,
+                    null,
+                    0,
+                    remaining,
+                    false,
+                    LocalDateTime.now()
+            );
+            try {
+                plugin.getDatabaseManager().getMailboxDAO().insert(entry);
+            } catch (Exception e) {
+                plugin.getLogger().severe("Failed to deposit compressed currency to mailbox: " + e.getMessage());
+            }
+        }
+    }
+
+    private long giveCurrencyInternal(Player player, long amount) {
         long remaining = amount;
-        long mailboxAmount = 0;
 
         // 给予 bundle（从大到小）
         for (CurrencyBundle bundle : bundles) {
@@ -162,26 +219,29 @@ public class CurrencyManager {
             }
         }
 
-        // 剩余存入信箱
-        if (remaining > 0) {
-            mailboxAmount = remaining;
-            MailboxEntry entry = new MailboxEntry(
-                    player.getUniqueId(),
-                    MailboxType.CURRENCY,
-                    null,
-                    0,
-                    remaining,
-                    false,
-                    LocalDateTime.now()
-            );
-            try {
-                plugin.getDatabaseManager().getMailboxDAO().insert(entry);
-            } catch (Exception e) {
-                plugin.getLogger().severe("Failed to deposit currency to mailbox: " + e.getMessage());
+        return remaining;
+    }
+
+    private void removeAllCurrency(Player player) {
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if (item != null && isCurrency(item)) {
+                inv.setItem(i, null);
             }
         }
+    }
 
-        return mailboxAmount;
+    private boolean isCurrency(ItemStack item) {
+        if (baseCurrency.matches(item)) {
+            return true;
+        }
+        for (CurrencyBundle bundle : bundles) {
+            if (bundle.matches(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean canHoldCurrency(Player player, long amount) {

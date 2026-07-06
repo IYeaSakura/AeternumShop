@@ -1,7 +1,6 @@
 package net.sakurain.mc.shop.gui;
 
 import net.sakurain.mc.shop.model.PlayerListing;
-import net.sakurain.mc.shop.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -37,28 +36,34 @@ public class ShopPlayerGUI extends AbstractGUI {
             return;
         }
 
-        int itemsPerPage = 45;
+        int itemsPerPage = 28;
         int start = page * itemsPerPage;
         int end = Math.min(start + itemsPerPage, listings.size());
 
+        int slot = 10;
         for (int i = start; i < end; i++) {
-            PlayerListing listing = listings.get(i);
-            int slot = i - start;
-            if (slot >= 45) break;
+            if (slot >= 44) break;
+            if (slot % 9 == 8) slot += 2;
 
+            PlayerListing listing = listings.get(i);
             Material material = Material.matchMaterial(listing.getItemType());
             if (material == null) material = Material.BARRIER;
 
+            boolean own = listing.getSeller().equals(player.getUniqueId());
             List<String> lore = new ArrayList<>();
             lore.add("<gray>数量: <yellow>" + listing.getItemAmount());
             lore.add("<gray>总价: <yellow>" + listing.getPrice() + " <gray>基础货币");
             lore.add("<gray>卖家: <yellow>" + listing.getSellerName());
-            lore.add("<green>点击购买");
+            if (own) {
+                lore.add("<red>点击下架");
+            } else {
+                lore.add("<green>点击购买");
+            }
 
-            ItemStack display = createGuiItem(material,
-                    "<yellow>" + StringUtil.capitalize(listing.getItemType().replace("_", " ")), lore);
+            ItemStack display = createGuiItem(material, listing.getItemAmount(), lore);
             setItem(slot, display);
             slotToListingId.put(slot, listing.getId());
+            slot++;
         }
 
         if (page > 0) {
@@ -91,7 +96,29 @@ public class ShopPlayerGUI extends AbstractGUI {
         Integer listingId = slotToListingId.get(slot);
         if (listingId == null) return;
 
-        new ShopConfirmGUI(player, listingId, page).open();
+        PlayerListing listing;
+        try {
+            listing = plugin.getDatabaseManager().getPlayerListingDAO().findById(listingId).orElse(null);
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Failed to load listing: " + e.getMessage());
+            return;
+        }
+
+        if (listing == null) {
+            plugin.getMessageManager().send(player, "listing-not-found");
+            initialize();
+            player.updateInventory();
+            return;
+        }
+
+        if (listing.getSeller().equals(player.getUniqueId())) {
+            var result = plugin.getTransactionManager().cancelListing(player, listingId);
+            plugin.getMessageManager().send(player, result.getMessageKey(), result.getPlaceholders());
+            initialize();
+            player.updateInventory();
+        } else {
+            new ShopConfirmGUI(player, listingId, page).open();
+        }
     }
 
     public int getPage() {

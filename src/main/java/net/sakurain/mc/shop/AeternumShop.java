@@ -1,7 +1,6 @@
 package net.sakurain.mc.shop;
 
 import net.sakurain.mc.shop.command.CommandManager;
-import net.sakurain.mc.shop.command.ShopAddCommand;
 import net.sakurain.mc.shop.command.ShopCommand;
 import net.sakurain.mc.shop.config.ConfigManager;
 import net.sakurain.mc.shop.config.MessageManager;
@@ -58,9 +57,7 @@ public class AeternumShop extends JavaPlugin {
 
         // 6. Commands
         getCommand("shop").setExecutor(new ShopCommand(this));
-        getCommand("shopadd").setExecutor(new ShopAddCommand(this));
         getCommand("shop").setTabCompleter(new CommandManager(this));
-        getCommand("shopadd").setTabCompleter(new CommandManager(this));
 
         // 7. Events
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(this), this);

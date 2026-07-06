@@ -2,7 +2,6 @@ package net.sakurain.mc.shop.gui;
 
 import net.sakurain.mc.shop.model.TradeRecord;
 import net.sakurain.mc.shop.model.TradeType;
-import net.sakurain.mc.shop.util.StringUtil;
 import net.sakurain.mc.shop.util.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,7 +33,7 @@ public class ShopHistoryGUI extends AbstractGUI {
         }
 
         if (records.isEmpty()) {
-            setItem(22, createGuiItem(Material.PAPER, "<gray>暂无交易记录"));
+            setItem(22, createGuiItem(Material.PAPER, "<gray>暂无交易记录", new ArrayList<>()));
         } else {
             int slot = 10;
             for (TradeRecord record : records) {
@@ -63,9 +62,7 @@ public class ShopHistoryGUI extends AbstractGUI {
                 }
                 lore.add("<gray>时间: <yellow>" + TimeUtil.format(record.getTradeTime()));
 
-                ItemStack display = createGuiItem(material,
-                        "<yellow>" + StringUtil.capitalize(record.getItemType().replace("_", " ")), lore);
-                setItem(slot, display);
+                setItem(slot, createGuiItem(material, record.getItemAmount(), lore));
                 slot++;
             }
         }

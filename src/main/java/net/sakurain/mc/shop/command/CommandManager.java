@@ -21,6 +21,12 @@ public class CommandManager implements TabCompleter {
         List<String> results = new ArrayList<>();
         if (command.getName().equalsIgnoreCase("shop")) {
             if (args.length == 1) {
+                if (sender.hasPermission("aeternumshop.command.add")) {
+                    results.add("add");
+                }
+                if (sender.hasPermission("aeternumshop.command.show")) {
+                    results.add("show");
+                }
                 if (sender.hasPermission("aeternumshop.command.history")) {
                     results.add("history");
                 }

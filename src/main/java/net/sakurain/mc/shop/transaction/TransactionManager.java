@@ -58,16 +58,40 @@ public class TransactionManager {
 
         recordTrade(TradeType.SYSTEM_BUY, null, null, player.getUniqueId(), player.getName(), itemType, amount, reward);
 
-        if (mailbox > 0) {
-            return TransactionResult.success("buy-success",
-                    "amount", String.valueOf(amount),
-                    "item", material.name().toLowerCase(),
-                    "reward", String.valueOf(reward));
-        }
-        return TransactionResult.success("buy-success",
+        String messageKey = mailbox > 0 ? "buy-success-mailbox" : "buy-success";
+        return TransactionResult.success(messageKey,
                 "amount", String.valueOf(amount),
                 "item", material.name().toLowerCase(),
-                "reward", String.valueOf(reward));
+                "reward", String.valueOf(reward),
+                "mailbox", String.valueOf(mailbox));
+    }
+
+    public TransactionResult systemBuyMax(Player player, String itemType, int amountPerTrade, long rewardPerTrade) {
+        Material material = Material.matchMaterial(itemType);
+        if (material == null) {
+            return TransactionResult.fail("listing-not-found");
+        }
+
+        int available = InventoryUtil.countItems(player, material);
+        if (available < amountPerTrade) {
+            return TransactionResult.fail("inventory-full", "amount", String.valueOf(amountPerTrade));
+        }
+
+        int maxSets = available / amountPerTrade;
+        int totalAmount = maxSets * amountPerTrade;
+        long totalReward = maxSets * rewardPerTrade;
+
+        InventoryUtil.removeItems(player, material, totalAmount);
+        long mailbox = currencyManager.deposit(player, totalReward);
+
+        recordTrade(TradeType.SYSTEM_BUY, null, null, player.getUniqueId(), player.getName(), itemType, totalAmount, totalReward);
+
+        String messageKey = mailbox > 0 ? "buy-success-mailbox" : "buy-success";
+        return TransactionResult.success(messageKey,
+                "amount", String.valueOf(totalAmount),
+                "item", material.name().toLowerCase(),
+                "reward", String.valueOf(totalReward),
+                "mailbox", String.valueOf(mailbox));
     }
 
     public TransactionResult systemSell(Player player, String itemType, int amount, long cost) {
@@ -95,6 +119,41 @@ public class TransactionManager {
                 "amount", String.valueOf(amount),
                 "item", itemType,
                 "cost", String.valueOf(cost));
+    }
+
+    public TransactionResult systemSellMax(Player player, String itemType, int amountPerTrade, long costPerTrade) {
+        Material material = Material.matchMaterial(itemType);
+        if (material == null) {
+            return TransactionResult.fail("listing-not-found");
+        }
+
+        long balance = currencyManager.getPlayerBalance(player);
+        if (balance < costPerTrade) {
+            return TransactionResult.fail("not-enough-currency", "amount", String.valueOf(costPerTrade));
+        }
+
+        int maxByBalance = (int) (balance / costPerTrade);
+        int maxByInventory = InventoryUtil.getFreeSpace(player, material) / amountPerTrade;
+        int maxSets = Math.min(maxByBalance, maxByInventory);
+
+        if (maxSets <= 0) {
+            return TransactionResult.fail(maxByBalance <= 0 ? "not-enough-currency" : "inventory-full");
+        }
+
+        int totalAmount = maxSets * amountPerTrade;
+        long totalCost = maxSets * costPerTrade;
+
+        if (!currencyManager.withdraw(player, totalCost)) {
+            return TransactionResult.fail("not-enough-currency", "amount", String.valueOf(totalCost));
+        }
+
+        player.getInventory().addItem(new ItemStack(material, totalAmount));
+        recordTrade(TradeType.SYSTEM_SELL, player.getUniqueId(), player.getName(), null, null, itemType, totalAmount, totalCost);
+
+        return TransactionResult.success("sell-success",
+                "amount", String.valueOf(totalAmount),
+                "item", itemType,
+                "cost", String.valueOf(totalCost));
     }
 
     public TransactionResult playerTrade(Player buyer, int listingId) {

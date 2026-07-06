@@ -1,6 +1,5 @@
 package net.sakurain.mc.shop.gui;
 
-import net.sakurain.mc.shop.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -47,9 +46,10 @@ public class ShopSellGUI extends AbstractGUI {
             List<String> lore = new ArrayList<>();
             lore.add("<gray>购买数量: <yellow>" + amount);
             lore.add("<gray>花费货币: <yellow>" + cost);
-            lore.add("<green>点击购买");
+            lore.add("<green>左键购买");
+            lore.add("<green>右键购买最大量");
 
-            ItemStack display = createGuiItem(material, "<yellow>" + StringUtil.capitalize(key), lore);
+            ItemStack display = createGuiItem(material, amount, lore);
             setItem(slot, display);
             slotToItem.put(slot, key);
             slotToAmount.put(slot, amount);
@@ -74,7 +74,9 @@ public class ShopSellGUI extends AbstractGUI {
         int amount = slotToAmount.get(slot);
         long cost = slotToCost.get(slot);
 
-        var result = plugin.getTransactionManager().systemSell(player, itemType, amount, cost);
+        var result = event.getClick().isRightClick()
+                ? plugin.getTransactionManager().systemSellMax(player, itemType, amount, cost)
+                : plugin.getTransactionManager().systemSell(player, itemType, amount, cost);
         plugin.getMessageManager().send(player, result.getMessageKey(), result.getPlaceholders());
         if (result.isSuccess()) {
             initialize();
