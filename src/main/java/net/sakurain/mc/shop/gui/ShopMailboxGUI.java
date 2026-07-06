@@ -39,14 +39,16 @@ public class ShopMailboxGUI extends AbstractGUI {
             return;
         }
 
-        int itemsPerPage = 45;
+        int itemsPerPage = 28;
         int start = page * itemsPerPage;
         int end = Math.min(start + itemsPerPage, entries.size());
 
+        int slot = 10;
         for (int i = start; i < end; i++) {
+            if (slot >= 44) break;
+            if (slot % 9 == 8) slot += 2;
+
             MailboxEntry entry = entries.get(i);
-            int slot = i - start;
-            if (slot >= 45) break;
 
             Material material;
             List<String> lore = new ArrayList<>();
@@ -68,6 +70,7 @@ public class ShopMailboxGUI extends AbstractGUI {
 
             setItem(slot, createGuiItem(material, amount, lore));
             slotToEntryId.put(slot, entry.getId());
+            slot++;
         }
 
         if (page > 0) {

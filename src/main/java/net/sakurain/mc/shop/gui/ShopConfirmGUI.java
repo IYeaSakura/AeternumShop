@@ -1,6 +1,7 @@
 package net.sakurain.mc.shop.gui;
 
 import net.sakurain.mc.shop.model.PlayerListing;
+import net.sakurain.mc.shop.util.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -44,10 +45,14 @@ public class ShopConfirmGUI extends AbstractGUI {
         Material material = Material.matchMaterial(listing.getItemType());
         if (material == null) material = Material.BARRIER;
 
+        int durationHours = plugin.getConfigManager().getInt("player-trade.listing-duration-hours", 24);
+        java.time.LocalDateTime expireTime = listing.getPostTime().plusHours(durationHours);
+
         List<String> lore = new ArrayList<>();
         lore.add("<gray>数量: <yellow>" + listing.getItemAmount());
         lore.add("<gray>总价: <yellow>" + listing.getPrice());
         lore.add("<gray>卖家: <yellow>" + listing.getSellerName());
+        lore.add("<gray>剩余时间: <yellow>" + TimeUtil.formatRemaining(expireTime));
 
         setItem(13, createGuiItem(material, listing.getItemAmount(), lore));
 

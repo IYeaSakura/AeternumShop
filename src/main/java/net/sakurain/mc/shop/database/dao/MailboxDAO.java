@@ -43,6 +43,43 @@ public class MailboxDAO {
         }
     }
 
+    /**
+     * 向玩家信箱存入货币。如果已有未领取的货币条目，则自动合并金额。
+     */
+    public void depositCurrency(UUID playerUuid, long amount) throws SQLException {
+        String selectSql = "SELECT id, currency_amount FROM mailbox WHERE player_uuid = ? AND entry_type = ? AND received = FALSE LIMIT 1";
+        try (Connection conn = databaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(selectSql)) {
+            ps.setString(1, playerUuid.toString());
+            ps.setString(2, MailboxType.CURRENCY.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    long newAmount = rs.getLong("currency_amount") + amount;
+                    String updateSql = "UPDATE mailbox SET currency_amount = ? WHERE id = ?";
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
+                        updatePs.setLong(1, newAmount);
+                        updatePs.setInt(2, id);
+                        updatePs.executeUpdate();
+                    }
+                    return;
+                }
+            }
+        }
+
+        // 没有现有货币条目，新建
+        MailboxEntry entry = new MailboxEntry(
+                playerUuid,
+                MailboxType.CURRENCY,
+                null,
+                0,
+                amount,
+                false,
+                LocalDateTime.now()
+        );
+        insert(entry);
+    }
+
     public List<MailboxEntry> findByPlayer(UUID player) throws SQLException {
         List<MailboxEntry> entries = new ArrayList<>();
         String sql = "SELECT * FROM mailbox WHERE player_uuid = ? AND received = FALSE ORDER BY create_time ASC";

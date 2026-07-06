@@ -34,6 +34,7 @@ public class YamlConfig {
         if (defaultStream != null) {
             config.setDefaults(YamlConfiguration.loadConfiguration(
                     new InputStreamReader(defaultStream, StandardCharsets.UTF_8)));
+            mergeDefaults();
         }
     }
 
@@ -61,6 +62,27 @@ public class YamlConfig {
         if (defaultStream != null) {
             config.setDefaults(YamlConfiguration.loadConfiguration(
                     new InputStreamReader(defaultStream, StandardCharsets.UTF_8)));
+            mergeDefaults();
+        }
+    }
+
+    private void mergeDefaults() {
+        org.bukkit.configuration.Configuration defaults = config.getDefaults();
+        if (defaults == null) {
+            return;
+        }
+        boolean changed = false;
+        for (String key : defaults.getKeys(true)) {
+            if (defaults.isConfigurationSection(key)) {
+                continue;
+            }
+            if (!config.contains(key)) {
+                config.set(key, defaults.get(key));
+                changed = true;
+            }
+        }
+        if (changed) {
+            save();
         }
     }
 }

@@ -203,18 +203,9 @@ public class TransactionManager {
         if (seller != null && seller.isOnline()) {
             currencyManager.deposit(seller, listing.getPrice());
         } else {
-            // 存入信箱
-            MailboxEntry entry = new MailboxEntry(
-                    listing.getSeller(),
-                    MailboxType.CURRENCY,
-                    null,
-                    0,
-                    listing.getPrice(),
-                    false,
-                    LocalDateTime.now()
-            );
+            // 存入信箱，自动合并已有货币条目
             try {
-                mailboxDAO.insert(entry);
+                mailboxDAO.depositCurrency(listing.getSeller(), listing.getPrice());
             } catch (SQLException e) {
                 plugin.getLogger().severe("Failed to deposit seller currency to mailbox: " + e.getMessage());
             }

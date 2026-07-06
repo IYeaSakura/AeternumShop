@@ -15,6 +15,8 @@ import net.sakurain.mc.shop.transaction.TransactionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class AeternumShop extends JavaPlugin {
 
     private static AeternumShop instance;
@@ -31,10 +33,10 @@ public class AeternumShop extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
-        saveResource("currency.yml", false);
-        saveResource("prices.yml", false);
-        saveResource("messages.yml", false);
-        saveResource("gui.yml", false);
+        saveResourceIfMissing("currency.yml");
+        saveResourceIfMissing("prices.yml");
+        saveResourceIfMissing("messages.yml");
+        saveResourceIfMissing("gui.yml");
 
         // 1. Config
         this.configManager = new ConfigManager(this);
@@ -83,6 +85,13 @@ public class AeternumShop extends JavaPlugin {
     public void reload() {
         configManager.reloadAll();
         currencyManager.loadFromConfig(configManager.getCurrency());
+    }
+
+    private void saveResourceIfMissing(String resourcePath) {
+        File file = new File(getDataFolder(), resourcePath);
+        if (!file.exists()) {
+            saveResource(resourcePath, false);
+        }
     }
 
     public static AeternumShop getInstance() {

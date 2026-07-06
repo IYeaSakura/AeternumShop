@@ -1,8 +1,7 @@
 package net.sakurain.mc.shop.currency;
 
 import net.sakurain.mc.shop.AeternumShop;
-import net.sakurain.mc.shop.model.MailboxEntry;
-import net.sakurain.mc.shop.model.MailboxType;
+
 import net.sakurain.mc.shop.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -144,17 +143,8 @@ public class CurrencyManager {
 
         long remaining = giveCurrencyInternal(player, amount);
         if (remaining > 0) {
-            MailboxEntry entry = new MailboxEntry(
-                    player.getUniqueId(),
-                    MailboxType.CURRENCY,
-                    null,
-                    0,
-                    remaining,
-                    false,
-                    LocalDateTime.now()
-            );
             try {
-                plugin.getDatabaseManager().getMailboxDAO().insert(entry);
+                plugin.getDatabaseManager().getMailboxDAO().depositCurrency(player.getUniqueId(), remaining);
             } catch (Exception e) {
                 plugin.getLogger().severe("Failed to deposit currency to mailbox: " + e.getMessage());
             }
@@ -176,17 +166,8 @@ public class CurrencyManager {
         removeAllCurrency(player);
         long remaining = giveCurrencyInternal(player, totalValue);
         if (remaining > 0) {
-            MailboxEntry entry = new MailboxEntry(
-                    player.getUniqueId(),
-                    MailboxType.CURRENCY,
-                    null,
-                    0,
-                    remaining,
-                    false,
-                    LocalDateTime.now()
-            );
             try {
-                plugin.getDatabaseManager().getMailboxDAO().insert(entry);
+                plugin.getDatabaseManager().getMailboxDAO().depositCurrency(player.getUniqueId(), remaining);
             } catch (Exception e) {
                 plugin.getLogger().severe("Failed to deposit compressed currency to mailbox: " + e.getMessage());
             }

@@ -1,6 +1,7 @@
 package net.sakurain.mc.shop.gui;
 
 import net.sakurain.mc.shop.model.PlayerListing;
+import net.sakurain.mc.shop.util.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -50,10 +51,14 @@ public class ShopPlayerGUI extends AbstractGUI {
             if (material == null) material = Material.BARRIER;
 
             boolean own = listing.getSeller().equals(player.getUniqueId());
+            int durationHours = plugin.getConfigManager().getInt("player-trade.listing-duration-hours", 24);
+            java.time.LocalDateTime expireTime = listing.getPostTime().plusHours(durationHours);
+
             List<String> lore = new ArrayList<>();
             lore.add("<gray>数量: <yellow>" + listing.getItemAmount());
             lore.add("<gray>总价: <yellow>" + listing.getPrice() + " <gray>基础货币");
             lore.add("<gray>卖家: <yellow>" + listing.getSellerName());
+            lore.add("<gray>剩余时间: <yellow>" + TimeUtil.formatRemaining(expireTime));
             if (own) {
                 lore.add("<red>点击下架");
             } else {
@@ -114,8 +119,7 @@ public class ShopPlayerGUI extends AbstractGUI {
         if (listing.getSeller().equals(player.getUniqueId())) {
             var result = plugin.getTransactionManager().cancelListing(player, listingId);
             plugin.getMessageManager().send(player, result.getMessageKey(), result.getPlaceholders());
-            initialize();
-            player.updateInventory();
+            new ShopPlayerGUI(player, page).open();
         } else {
             new ShopConfirmGUI(player, listingId, page).open();
         }
