@@ -2,7 +2,7 @@ name: AeternumShop
 version: '${project.version}'
 main: net.sakurain.mc.shop.AeternumShop
 description: A modular shop plugin for PaperMC 26.1.2
-author: Sakurain
+author: Yuyang.Wang
 api-version: '26.1.2'
 load: POSTWORLD
 

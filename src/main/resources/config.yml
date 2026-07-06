@@ -13,7 +13,7 @@ database:
 
 # 玩家交易设置
 player-trade:
-  max-listings-per-player: 5      # 每个玩家最多同时挂多少单
+  max-listings-per-player: 8      # 每个玩家最多同时挂多少单
   listing-duration-hours: 24      # 挂单有效期
   max-history-records: 20         # 每个玩家保留的最近交易记录数
 

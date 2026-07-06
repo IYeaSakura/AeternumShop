@@ -2,30 +2,48 @@
 
 # 系统收购: 玩家卖物品给系统
 buy:
-  bread:
-    amount: 128           # 一次收购的数量
-    reward: 1             # 奖励的基础货币数量
-  baked_potato:
-    amount: 192
+  wheat:
+    amount: 256            # 4组小麦 = 1基础货币
     reward: 1
   carrot:
-    amount: 256
+    amount: 256             # 4组胡萝卜 = 1基础货币
+    reward: 1
+  potato:
+    amount: 256             # 4组马铃薯 = 1基础货币
+    reward: 1
+  ender_pearl:
+    amount: 16              # 16个末影珍珠 = 1基础货币
+    reward: 1
+  obsidian:
+    amount: 32              # 32个黑曜石 = 1基础货币
     reward: 1
   ancient_debris:
-    amount: 1
-    reward: 16
+    amount: 1               # 1个远古遗骸 = 24基础货币
+    reward: 24
 
 # 系统出售: 玩家从系统购买
 sell:
-  golden_apple:
-    cost: 1               # 花费的基础货币数量
-    amount: 1             # 获得的物品数量
-  enchanted_golden_apple:
-    cost: 32
-    amount: 1
   ender_pearl:
-    cost: 1
-    amount: 8
+    cost: 1                 # 1基础货币 = 2个末影珍珠
+    amount: 2
+  blaze_rod:
+    cost: 1                 # 1基础货币 = 4个烈焰棒
+    amount: 4
+  golden_apple:
+    cost: 2                 # 2基础货币 = 1个金苹果
+    amount: 1
+  enchanted_golden_apple:
+    cost: 32                # 32基础货币 = 1个附魔金苹果
+    amount: 1
+  ancient_debris:
+    cost: 64                # 64基础货币 = 1个远古遗骸
+    amount: 1
+  iron_golem_spawn_egg:
+    cost: 16                # 16基础货币 = 1个铁傀儡生成蛋
+    amount: 1
   villager_spawn_egg:
-    cost: 192
+    cost: 192               # 192基础货币 = 1个村民生成蛋
+    amount: 1
+  armadillo_spawn_egg:
+    cost: 192               # 192基础货币 = 1个犰狳生成蛋
     amount: 1

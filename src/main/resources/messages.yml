@@ -1,6 +1,6 @@
 # 支持 MiniMessage 格式: <color>, <bold>, <italic> 等
 
-prefix: "<gold>[商城] <reset>"
+prefix: "<gold>[系统商店] <reset>"
 
 shop:
   main-title: "<gold>系统商店"
