@@ -1,0 +1,42 @@
+name: AeternumShop
+version: '${project.version}'
+main: net.sakurain.mc.shop.AeternumShop
+description: A modular shop plugin for PaperMC 26.1.2
+author: Sakurain
+api-version: '26.1.2'
+load: POSTWORLD
+
+commands:
+  shop:
+    description: Open the AeternumShop main menu
+    usage: /shop [history|reload|mailbox]
+    aliases: [shop]
+    permission: aeternumshop.command.shop
+    permission-message: "<red>You don't have permission to use this command."
+  shopadd:
+    description: List the item in your main hand on the player market
+    usage: /shopadd <price>
+    permission: aeternumshop.command.shopadd
+    permission-message: "<red>You don't have permission to use this command."
+
+permissions:
+  aeternumshop.command.shop:
+    description: Open the shop menu
+    default: true
+  aeternumshop.command.shopadd:
+    description: List items on the player market
+    default: true
+  aeternumshop.command.history:
+    description: View recent trade history
+    default: true
+  aeternumshop.command.mailbox:
+    description: Open the trade mailbox
+    default: true
+  aeternumshop.command.reload:
+    description: Reload plugin configuration
+    default: op
+  aeternumshop.admin:
+    description: Admin permission
+    default: op
+    children:
+      aeternumshop.command.reload: true

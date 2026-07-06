@@ -1,0 +1,36 @@
+# 支持 MiniMessage 格式: <color>, <bold>, <italic> 等
+
+prefix: "<gold>[商城] <reset>"
+
+shop:
+  main-title: "<gold>系统商店"
+  buy-title: "<green>系统收购"
+  sell-title: "<blue>系统出售"
+  player-title: "<yellow>玩家交易"
+  confirm-title: "<yellow>玩家交易 - 确认"
+  mailbox-title: "<light_purple>交易信箱"
+  history-title: "<aqua>交易记录"
+
+messages:
+  no-permission: "<red>你没有权限执行此操作！"
+  not-enough-currency: "<red>货币不足！需要 <yellow>%amount% <red>个基础货币。"
+  inventory-full: "<red>背包已满！"
+  listing-success: "<green>成功上架 <yellow>%amount% <green>个 <yellow>%item%<green>，总价 <aqua>%price% <green>基础货币！"
+  buy-success: "<green>成功卖出 <yellow>%amount% <green>个 <yellow>%item%<green>，获得 <aqua>%reward% <green>基础货币！"
+  sell-success: "<green>成功购买 <yellow>%amount% <green>个 <yellow>%item%<green>，花费 <aqua>%cost% <green>基础货币！"
+  trade-success: "<green>成功购买 <yellow>%seller% <green>的 <yellow>%item%<green>！"
+  cancel-success: "<green>成功下架物品，已退回信箱！"
+  mailbox-receive: "<green>信箱领取成功！"
+  listing-expired: "<yellow>你的挂单已过期，物品已退回信箱。"
+  not-your-listing: "<red>这不是你的挂单！"
+  cannot-buy-self: "<red>不能购买自己的物品！"
+  listing-not-found: "<red>该挂单已不存在！"
+  player-only: "<red>该命令只能由玩家执行！"
+  invalid-price: "<red>请输入有效的正整数价格！"
+  hand-empty: "<red>你的主手必须持有物品！"
+  max-listings: "<red>你已达到最大挂单数量 (%max%)！"
+  mailbox-full: "<red>你的信箱已满，无法存入更多物品！"
+  listing-limit-unstackable: "<red>不可堆叠物品只能上架 1 个！"
+  reload-success: "<green>配置重载成功！"
+  no-history: "<gray>暂无交易记录。"
+  mailbox-notify: "<yellow>你有未领取的信箱物品，输入 /shop mailbox 查看。"

@@ -1,0 +1,35 @@
+# AeternumShop 主配置
+
+# 数据库设置
+database:
+  type: SQLITE          # SQLITE 或 MYSQL
+  mysql:
+    host: localhost
+    port: 3306
+    database: aeternum_shop
+    username: root
+    password: ""
+    pool-size: 10
+
+# 玩家交易设置
+player-trade:
+  max-listings-per-player: 5      # 每个玩家最多同时挂多少单
+  listing-duration-hours: 24      # 挂单有效期
+  max-history-records: 20         # 每个玩家保留的最近交易记录数
+
+# 信箱设置
+mailbox:
+  max-entries: 100                # 每个玩家信箱最大条目数
+
+# GUI 设置
+gui:
+  rows: 6                         # 所有商店 GUI 行数
+  border-item: GRAY_STAINED_GLASS_PANE
+  border-name: " "
+
+# 功能开关
+features:
+  system-shop: true
+  player-trade: true
+  mailbox: true
+  trade-history: true

@@ -1,0 +1,52 @@
+# GUI 物品配置
+
+main-menu:
+  system-buy:
+    slot: 20
+    material: EMERALD_BLOCK
+    name: "<green>系统收购"
+    lore:
+      - "<gray>将物品出售给系统"
+  system-sell:
+    slot: 22
+    material: DIAMOND_BLOCK
+    name: "<blue>系统出售"
+    lore:
+      - "<gray>从系统购买物品"
+  player-trade:
+    slot: 24
+    material: CHEST
+    name: "<yellow>玩家交易"
+    lore:
+      - "<gray>查看其他玩家出售的物品"
+  mailbox:
+    slot: 40
+    material: ENDER_CHEST
+    name: "<light_purple>交易信箱"
+    lore:
+      - "<gray>领取离线交易收益和暂存物品"
+  close:
+    slot: 49
+    material: BARRIER
+    name: "<red>关闭"
+
+navigation:
+  previous-page:
+    material: ARROW
+    name: "<yellow>上一页"
+  next-page:
+    material: ARROW
+    name: "<yellow>下一页"
+  back:
+    material: BARRIER
+    name: "<red>返回"
+
+confirm:
+  confirm:
+    slot: 29
+    material: LIME_WOOL
+    name: "<green>确认购买"
+  cancel:
+    slot: 33
+    material: RED_WOOL
+    name: "<red>取消"

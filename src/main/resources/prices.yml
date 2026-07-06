@@ -1,0 +1,31 @@
+# 系统商店价格配置
+
+# 系统收购: 玩家卖物品给系统
+buy:
+  bread:
+    amount: 128           # 一次收购的数量
+    reward: 1             # 奖励的基础货币数量
+  baked_potato:
+    amount: 192
+    reward: 1
+  carrot:
+    amount: 256
+    reward: 1
+  ancient_debris:
+    amount: 1
+    reward: 16
+
+# 系统出售: 玩家从系统购买
+sell:
+  golden_apple:
+    cost: 1               # 花费的基础货币数量
+    amount: 1             # 获得的物品数量
+  enchanted_golden_apple:
+    cost: 32
+    amount: 1
+  ender_pearl:
+    cost: 1
+    amount: 8
+  villager_spawn_egg:
+    cost: 192
+    amount: 1

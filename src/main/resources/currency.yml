@@ -1,0 +1,19 @@
+# 货币系统配置
+# 支持多级货币集合，自动分解与压缩
+
+currency:
+  # 基础货币: 最小的不可再分单位
+  base:
+    id: "diamond"
+    material: DIAMOND
+    display-name: "钻石"
+
+  # 货币集合: 按价值从大到小排列
+  # 系统会自动按此顺序进行压缩（给予时优先给大面额）
+  # 消费时会从大到小分解
+  bundles:
+    - id: "diamond_block"
+      material: DIAMOND_BLOCK
+      display-name: "钻石块"
+      base-equivalent: 9          # 1个钻石块 = 9个钻石
+      base-unit: "diamond"        # 对应的基础货币ID
